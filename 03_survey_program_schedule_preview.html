@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>설문 · 프로그램 · 스케줄</title>
+  <style>
+    :root {
+      --ink: #111315;
+      --navy: #102846;
+      --deep: #142824;
+      --paper: #f5f2eb;
+      --paper-2: #e9e3d6;
+      --white: #ffffff;
+      --muted: #626a70;
+      --line: #d9d2c6;
+      --line-dark: #a7a092;
+      --coral: #d95e4f;
+      --blue: #2f66a0;
+      --lime: #dce46a;
+      --violet: #8d83bd;
+      --shadow: 0 20px 48px rgba(16, 24, 32, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(245, 242, 235, .92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      min-height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+    }
+
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--ink);
+      background:
+        linear-gradient(135deg, var(--navy) 0 50%, transparent 50%),
+        linear-gradient(315deg, var(--coral) 0 50%, #f3efe3 50%);
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+      color: #34383c;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 72px 0 62px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      margin-bottom: 58px;
+      color: #60666b;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .meta strong { color: var(--ink); font-weight: 900; }
+    .meta-right { text-align: right; color: #777c80; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 410px;
+      gap: 50px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      display: inline-grid;
+      grid-template-columns: 42px auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .eyebrow::before {
+      content: "";
+      height: 2px;
+      background: var(--coral);
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(44px, 6vw, 82px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 28px 0 0;
+      color: #31363a;
+      font-size: 20px;
+      line-height: 1.72;
+    }
+
+    .schedule-card {
+      background: var(--white);
+      border: 1px solid var(--line-dark);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .mini-schedule {
+      border: 1px solid var(--line);
+      background: #faf9f4;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mini-row:last-child { border-bottom: 0; }
+
+    .mini-row div {
+      padding: 13px 14px;
+      font-size: 14px;
+    }
+
+    .mini-row div:first-child {
+      color: var(--blue);
+      font-weight: 900;
+      border-right: 1px solid var(--line);
+    }
+
+    .mini-row div:last-child {
+      color: #343b40;
+      font-weight: 800;
+    }
+
+    section {
+      padding: 78px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: .72fr 1fr;
+      gap: 56px;
+      margin-bottom: 38px;
+      align-items: start;
+    }
+
+    .label {
+      color: var(--coral);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .03em;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(32px, 4.2vw, 54px);
+      line-height: 1.14;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.76;
+    }
+
+    .survey-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      border: 1px solid var(--line-dark);
+      background: var(--white);
+    }
+
+    .survey-block {
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      min-height: 300px;
+    }
+
+    .survey-block:nth-child(2n) { border-right: 0; }
+    .survey-block:nth-last-child(-n + 2) { border-bottom: 0; }
+
+    .survey-block h3 {
+      margin: 0 0 18px;
+      color: var(--navy);
+      font-size: 24px;
+    }
+
+    .question {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      padding: 13px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .qnum {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .question strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .question span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .dark {
+      background: var(--deep);
+      color: var(--white);
+    }
+
+    .dark .label { color: var(--lime); }
+    .dark h2 { color: var(--white); }
+    .dark .section-copy { color: rgba(255, 255, 255, .74); }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid rgba(255,255,255,.26);
+      background: rgba(255,255,255,.05);
+    }
+
+    .module {
+      min-height: 218px;
+      padding: 24px;
+      border-right: 1px solid rgba(255,255,255,.18);
+      border-bottom: 1px solid rgba(255,255,255,.18);
+    }
+
+    .module:nth-child(3n) { border-right: 0; }
+    .module:nth-last-child(-n + 3) { border-bottom: 0; }
+
+    .module small {
+      display: block;
+      margin-bottom: 18px;
+      color: var(--lime);
+      font-weight: 900;
+    }
+
+    .module h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    .module p {
+      margin: 0;
+      color: rgba(255,255,255,.72);
+      font-size: 15px;
+    }
+
+    .table-wrap {
+      background: var(--white);
+      border: 1px solid var(--line-dark);
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(16,24,32,.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th, td {
+      padding: 18px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--navy);
+      background: var(--paper-2);
+      font-weight: 900;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .output-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line-dark);
+      background: var(--white);
+    }
+
+    .output {
+      min-height: 156px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-weight: 900;
+      color: var(--navy);
+    }
+
+    .output:nth-child(4n) { border-right: 0; }
+    .output:nth-last-child(-n + 4) { border-bottom: 0; }
+
+    .output span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 980px) {
+      .nav { display: none; }
+      .hero-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 26px; }
+      .section-head { grid-template-columns: 1fr; gap: 20px; }
+      .module-grid, .output-strip { grid-template-columns: repeat(2, 1fr); }
+      .module:nth-child(3n), .output:nth-child(4n) { border-right: 1px solid rgba(255,255,255,.18); }
+      .output:nth-child(4n) { border-right-color: var(--line); }
+      .module:nth-child(2n), .output:nth-child(2n) { border-right: 0; }
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 28px, 1180px); }
+      .meta, .hero-grid, .survey-grid, .module-grid, .output-strip { grid-template-columns: 1fr; }
+      .meta-right { text-align: left; }
+      .survey-block, .module, .output { border-right: 0 !important; border-bottom: 1px solid var(--line); }
+      .module { border-bottom-color: rgba(255,255,255,.18); }
+      .survey-block:last-child, .module:last-child, .output:last-child { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="page topbar-inner">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Workshop Operation Preview</span>
+      </a>
+      <nav class="nav" aria-label="페이지 이동">
+        <a href="#survey">Survey</a>
+        <a href="#program">Program</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#outputs">Output</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="page">
+        <div class="meta">
+          <div><strong>Prepared by STUDIOGROUND</strong><br>Survey · Program · Schedule</div>
+          <div class="meta-right">For field operation<br>v0 Preview</div>
+        </div>
+
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">현장 운영 설계</div>
+            <h1>질문은 쉽게, 산출물은 분명하게.</h1>
+            <p class="lead">참여자가 전문 용어를 외우는 대신 실톝 장면과 고객의 말을 적도록 설계합니다. 모든 세션은 다음 단계에 쓰이는 작은 산출물로 끝납니다.</p>
+          </div>
+
+          <aside class="schedule-card" aria-label="스케줄 요약">
+            <div class="mini-schedule">
+              <div class="mini-row"><div>Before</div><div>사전 설문 · 재료 수집</div></div>
+              <div class="mini-row"><div>Day 1</div><div>내 안의 언어 · 고객의 하루</div></div>
+              <div class="mini-row"><div>Day 2</div><div>되비추기 · 비주얼 방향</div></div>
+              <div class="mini-row"><div>Day 3</div><div>AI 시뮬레이션 · 실행 항목</div></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="survey">
+      <div class="page">
+        <div class="section-head">
+          <div class="label">SURVEY</div>
+          <div>
+            <h2>사전 설문</h2>
+            <p class="section-copy">브랜딩 용어를 먼저 꺼내지 않습니다. 참여자가 자기 경험으로 답할 수 있는 질문을 통해 창업자의 언어, 고객 장면, 시장의 반응을 모읍니다.</p>
+          </div>
+        </div>
+
+        <div class="survey-grid">
+          <article class="survey-block">
+            <h3>A. 우리 회사의 시작</h3>
+            <div class="question"><div class="qnum">01</div><div><strong>처음 이 일을 시작하게 된 계기를 한 장면으로 적어 주세요.</strong><span>누구와 있었고, 어떤 말을 들었고, 무엇이 걸렸나요?</span></div></div>
+            <div class="question"><div class="qnum">02</div><div><strong>내가 하지 않았다면 세상에 어떤 빈자리가 남았을까요?</strong><span>거창한 답보다 실제로 아쉬워할 사람을 떠올립니다.</span></div></div>
+            <div class="question"><div class="qnum">03</div><div><strong>지금까지 버티게 한 이유는 무엇인가요?</strong><span>돈, 성과, 책임감 말고도 괜찮습니다.</span></div></div>
+          </article>
+          <article class="survey-block">
+            <h3>B. 고객의 하루</h3>
+            <div class="question"><div class="qnum">04</div><div><strong>우리 제품 없이 가장 불편한 하루를 보내는 사람은 누구인가요?</strong><span>나이, 상황, 장소, 행동까지 구체적으로 적습니다.</span></div></div>
+            <div class="question"><div class="qnum">05</div><div><strong>그 사람은 지금 우리 대신 무엇을 쓰고 있나요?</strong><span>경쟁사뿐 아니라 습관, 대체 행동도 포함합니다.</span></div></div>
+            <div class="question"><div class="qnum">06</div><div><strong>그 사람이 우리를 선택하려면 무엇을 믿어야 하나요?</strong><span>가격, 신뢰, 편의, 효과, 주변 반응을 확인합니다.</span></div></div>
+          </article>
+          <article class="survey-block">
+            <h3>C. 고객에게 들리는 말</h3>
+            <div class="question"><div class="qnum">07</div><div><strong>고객이 친구에게 우리 회사를 설명한다면 어떤 말로 설명할까요?</strong><span>회사 소개서 문장이 아니라 구전 문장을 찾습니다.</span></div></div>
+            <div class="question"><div class="qnum">08</div><div><strong>우리가 자주 쓰지만 고객은 잘 못 알아듣는 말은 무엇인가요?</strong><span>전문 용어, 내부 약어, 추상 표현을 표시합니다.</span></div></div>
+          </article>
+          <article class="survey-block">
+            <h3>D. 우리다운 말과 이미지</h3>
+            <div class="question"><div class="qnum">09</div><div><strong>우리 회사가 사람이라면 어떤 말투를 쓸까요?</strong><span>친절한지, 단호한지, 조용한지, 빠른지 적습니다.</span></div></div>
+            <div class="question"><div class="qnum">10</div><div><strong>30일 안에 실제로 바꿔보고 싶은 고객 접점은 무엇인가요?</strong><span>홈페이지, IR, 상세페이지, SNS, 제안서 등.</span></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="program" class="dark">
+      <div class="page">
+        <div class="section-head">
+          <div class="label">PROGRAM</div>
+          <div>
+            <h2>현장 프로그램 모듈</h2>
+            <p class="section-copy">각 모듈은 설명보다 작성, 대화, 피드백, 선택으로 움직입니다. 대면 워크숍의 가치는 서로의 말이 어떻게 들리는지 확인하는 데 있습니다.</p>
+          </div>
+        </div>
+
+        <div class="module-grid">
+          <article class="module"><small>01</small><h3>시작한 이유를 다시 말하기</h3><p>창업 계기와 버틴 이유를 실제 장면으로 적고 반복 키워드를 찾습니다.</p></article>
+          <article class="module"><small>02</small><h3>고객의 하루를 그리기</h3><p>추상적인 타깃 대신 우리 없이 가장 불편한 사람의 하루를 구체화합니다.</p></article>
+          <article class="module"><small>03</small><h3>우리 말이 어떻게 들리는지 확인하기</h3><p>회사 소개문을 고객, 시장, 투자자 관점에서 다시 읽고 고칩니다.</p></article>
+          <article class="module"><small>04</small><h3>살릴 말, 바꿀 말, 버릴 말</h3><p>좋은 말의 나열을 줄이고 우리 회사가 계속 사용할 판단 기준을 만듭니다.</p></article>
+          <article class="module"><small>05</small><h3>AI와 비주얼 시뮬레이션</h3><p>카피와 비주얼 초안을 만들고 우리다움과 실행 가능성을 평가합니다.</p></article>
+          <article class="module"><small>06</small><h3>30일 실행 항목 정하기</h3><p>워크숍 이후 바로 바꿔볼 고객 접점과 확인할 반응을 정합니다.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="schedule">
+      <div class="page">
+        <div class="section-head">
+          <div class="label">SCHEDULE</div>
+          <div>
+            <h2>스케줄 프레임</h2>
+            <p class="section-copy">일정 자체는 파트너사 안을 존중하되, 각 구간의 목적과 산출물이 분명히 보이도록 재정렬합니다.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>구간</th><th>목적</th><th>주요 활동</th><th>산출물</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>사전</td><td>재료 수집</td><td>사전 설문 작성</td><td>시작 장면, 고객 장면, 현재 소개문</td></tr>
+              <tr><td>Day 1 오전</td><td>내 안의 언어 도출</td><td>시작한 이유, 고객의 하루</td><td>창업 서사, 고객 장면</td></tr>
+              <tr><td>Day 1 오후</td><td>한 문장 초안</td><td>회사 설명, 고객 설명, 시장 설명</td><td>브랜드 한 문장 초안</td></tr>
+              <tr><td>Day 2 오전</td><td>되비추기</td><td>살릴 말 / 바꿀 말 / 버릴 말</td><td>판단 기준, 금지어</td></tr>
+              <tr><td>Day 2 오후</td><td>비주얼 방향</td><td>장면, 톤, 무드, 접점 정리</td><td>비주얼 키워드</td></tr>
+              <tr><td>Day 3</td><td>AI 시뮬레이션과 실행</td><td>카피/비주얼 초안 평가, 30일 실행 작성</td><td>AI 평가표, 실행표, 브랜드북 입력 데이터</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="outputs">
+      <div class="page">
+        <div class="section-head">
+          <div class="label">FINAL OUTPUT</div>
+          <div>
+            <h2>최종 참여자 산출물</h2>
+            <p class="section-copy">워크숍 후 각 팀은 발표용 문장만이 아니라, 판단 기준과 실행 항목을 함께 가져갑니다.</p>
+          </div>
+        </div>
+
+        <div class="output-strip">
+          <div class="output">우리 회사 한 문장<span>고객이 알아듣는 설명</span></div>
+          <div class="output">핵심 고객 장면<span>실제 하루와 선택 장벽</span></div>
+          <div class="output">투자자 30초 소개<span>시장에 들리는 문장</span></div>
+          <div class="output">금지어 리스트<span>우리답지 않은 표현</span></div>
+          <div class="output">비주얼 키워드<span>이미지와 무드 기준</span></div>
+          <div class="output">AI 평가 기준<span>결과물을 판단하는 표</span></div>
+          <div class="output">30일 실행 항목<span>바꿀 접점과 책임자</span></div>
+          <div class="output">브랜드북 입력 데이터<span>추후 자동 정리용 구조</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
